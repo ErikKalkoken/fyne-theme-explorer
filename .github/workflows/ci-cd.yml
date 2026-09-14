@@ -1,0 +1,41 @@
+# Github workflow for running build and test
+# spellchecker: disable
+
+name: CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v7
+
+    - name: Set up Go
+      uses: actions/setup-go@v7
+      with:
+        go-version: '1.26.2'
+
+    - name: Install OS dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install gcc libgl1-mesa-dev xorg-dev libwayland-dev libxkbcommon-dev
+
+    - name: Install go dependencies
+      run: go mod download
+
+    - name: Build
+      run: go build -v ./...
+
+    - name: Test
+      run: go test -coverprofile=coverage.txt ./...
+
+    - name: Upload results to Codecov
+      uses: codecov/codecov-action@v7
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
