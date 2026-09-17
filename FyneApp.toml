@@ -1,0 +1,24 @@
+Website = "https://github.com/ErikKalkoken/fyne-theme-explorer"
+
+[Details]
+Icon = "Icon.png"
+Name = "Fyne Theme Explorer"
+ID = "io.github.erikkalkoken.fyne-theme-explorer"
+Version = "1.0.0"
+Build = 0
+
+[Release]
+BuildName = "fyne-theme-explorer"
+ContentRating = "oars-1.1"
+Description = "<p>fyne-theme-explorer is a desktop app for browsing the current Fyne theme's colors, icons, and sizes.</p>"
+License = "MIT"
+Screenshots = "https://github.com/user-attachments/assets/02c36c6c-e739-4065-91ce-5560572dd7bc"
+
+[LinuxAndBSD]
+GenericName = "Theme Browser"
+Categories = ["Development"]
+Comment = "A desktop app for browsing the current Fyne theme's colors, icons, and sizes"
+Keywords = ["Fyne", "theme"]
+
+[Migrations]
+fyneDo = true
