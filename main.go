@@ -7,6 +7,7 @@ import (
 	"image/color"
 	"slices"
 	"strings"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -21,18 +22,36 @@ import (
 )
 
 const (
-	iconSizeStart = 40
-	repoURL       = "https://github.com/ErikKalkoken/fyne-theme-explorer"
+	iconSizeStart       = 40
+	repoURL             = "https://github.com/ErikKalkoken/fyne-theme-explorer"
+	copiedLabelDuration = 1500 * time.Millisecond
 )
 
 func main() {
 	app := app.NewWithID("io.github.erikkalkoken.fyne-theme-explorer")
 	w := app.NewWindow("Fyne Theme Explorer")
+
+	copyLabel := widget.NewLabel("")
+	var copyGeneration int
+	onCopy := func(name string) {
+		fyne.CurrentApp().Clipboard().SetContent(name)
+		copyLabel.SetText(fmt.Sprintf("Copied %q to clipboard", name))
+		copyGeneration++
+		gen := copyGeneration
+		time.AfterFunc(copiedLabelDuration, func() {
+			fyne.Do(func() {
+				if gen == copyGeneration {
+					copyLabel.SetText("")
+				}
+			})
+		})
+	}
+
 	tabs := container.NewAppTabs(
 		container.NewTabItem("Welcome", makeWelcome()),
-		container.NewTabItem("Colors", withTitle("Colors", makeColors())),
-		container.NewTabItem("Icons", withTitle("Icons", makeIcons())),
-		container.NewTabItem("Sizes", withTitle("Sizes", makeSizes())),
+		container.NewTabItem("Colors", withTitle("Colors", makeColors(onCopy))),
+		container.NewTabItem("Icons", withTitle("Icons", makeIcons(onCopy))),
+		container.NewTabItem("Sizes", withTitle("Sizes", makeSizes(onCopy))),
 	)
 	tabs.SetTabLocation(container.TabLocationLeading)
 
@@ -51,6 +70,7 @@ func main() {
 	bottom := container.NewVBox(
 		widget.NewSeparator(),
 		container.NewHBox(
+			copyLabel,
 			layout.NewSpacer(),
 			widget.NewLabel("Theme"),
 			themeSelect,
@@ -81,7 +101,7 @@ func withTitle(name string, content fyne.CanvasObject) fyne.CanvasObject {
 	)
 }
 
-func makeColors() fyne.CanvasObject {
+func makeColors(onCopy func(name string)) fyne.CanvasObject {
 	hasTransparencyDark := make(map[fyne.ThemeColorName]bool)
 	hasTransparencyLight := make(map[fyne.ThemeColorName]bool)
 	th := theme.Current()
@@ -150,6 +170,13 @@ func makeColors() fyne.CanvasObject {
 			check2.SetChecked(hasTransparencyDark[myColor.name])
 		},
 	)
+	list.OnSelected = func(id widget.ListItemID) {
+		defer list.UnselectAll()
+		if id >= len(rowsFiltered) {
+			return
+		}
+		onCopy(rowsFiltered[id].label)
+	}
 
 	searchEntry := widget.NewEntry()
 	searchEntry.SetPlaceHolder("Search...")
@@ -222,7 +249,7 @@ func makeColors() fyne.CanvasObject {
 	)
 }
 
-func makeSizes() fyne.CanvasObject {
+func makeSizes(onCopy func(name string)) fyne.CanvasObject {
 	var rowsFiltered []sizeRow
 
 	list := widget.NewList(
@@ -251,6 +278,13 @@ func makeSizes() fyne.CanvasObject {
 			size.SetText(fmt.Sprint(v))
 		},
 	)
+	list.OnSelected = func(id widget.ListItemID) {
+		defer list.UnselectAll()
+		if id >= len(rowsFiltered) {
+			return
+		}
+		onCopy(rowsFiltered[id].label)
+	}
 
 	searchEntry := widget.NewEntry()
 	searchEntry.SetPlaceHolder("Search...")
@@ -305,7 +339,7 @@ func makeSizes() fyne.CanvasObject {
 	)
 }
 
-func makeIcons() fyne.CanvasObject {
+func makeIcons(onCopy func(name string)) fyne.CanvasObject {
 	var rowsFiltered []iconRow
 
 	var iconSize float32 = iconSizeStart
@@ -357,6 +391,13 @@ func makeIcons() fyne.CanvasObject {
 			label.SetText(s.label)
 		},
 	)
+	grid.OnSelected = func(id widget.GridWrapItemID) {
+		defer grid.UnselectAll()
+		if id >= len(rowsFiltered) {
+			return
+		}
+		onCopy(rowsFiltered[id].label)
+	}
 
 	searchEntry := widget.NewEntry()
 	searchEntry.SetPlaceHolder("Search...")

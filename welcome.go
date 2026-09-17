@@ -3,6 +3,7 @@ package main
 import (
 	_ "embed"
 	"net/url"
+	"runtime/debug"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/canvas"
@@ -23,11 +24,24 @@ func parseURL(s string) *url.URL {
 	return u
 }
 
+// appVersion returns the app version from the Fyne metadata (FyneApp.toml or
+// packaged build), falling back to the module version embedded by
+// `go install pkg@version` when no Fyne metadata was loaded.
+func appVersion() string {
+	if meta := fyne.CurrentApp().Metadata(); meta.ID != "" {
+		return meta.Version
+	}
+	if bi, ok := debug.ReadBuildInfo(); ok {
+		return bi.Main.Version
+	}
+	return "unknown"
+}
+
 func makeWelcome() fyne.CanvasObject {
 	title := widget.NewLabelWithStyle("Welcome to Fyne Theme Explorer", fyne.TextAlignCenter, fyne.TextStyle{Bold: true})
 	title.SizeName = theme.SizeNameSubHeadingText
 
-	version := widget.NewLabelWithStyle(fyne.CurrentApp().Metadata().Version, fyne.TextAlignCenter, fyne.TextStyle{})
+	version := widget.NewLabelWithStyle(appVersion(), fyne.TextAlignCenter, fyne.TextStyle{})
 
 	logo := canvas.NewImageFromResource(fyne.NewStaticResource("Icon.png", iconBytes))
 	logo.FillMode = canvas.ImageFillContain
