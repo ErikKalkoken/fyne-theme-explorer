@@ -4,8 +4,8 @@ Website = "https://github.com/ErikKalkoken/fyne-theme-explorer"
 Icon = "Icon.png"
 Name = "Fyne Theme Explorer"
 ID = "io.github.erikkalkoken.fyne-theme-explorer"
-Version = "1.0.0"
-Build = 0
+Version = "1.1.0"
+Build = 1
 
 [Release]
 BuildName = "fyne-theme-explorer"

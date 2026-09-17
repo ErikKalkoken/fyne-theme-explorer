@@ -11,17 +11,18 @@ A desktop app for browsing the current Fyne theme's colors, icons, and sizes.
 
 ## Description
 
-fyne-theme-explorer is a Fyne app for showing details about the default Fyne theme like colors, icons and sizes. This can be very useful when creating your own apps and widgets, e.g. when trying to find the right theme color to use in a new widget.
+fyne-theme-explorer is a Fyne app for showing details about the default Fyne theme like colors, icons and sizes. This can be very useful when creating your own apps and widgets, e.g. when trying to find the right theme color to use in a custom widget.
 
 Features:
 
 - Search, sort, and filter colors, icons, and sizes
 - Light / dark / auto theme toggle
 - Adjustable icon size and color
+- Copy names to clipboard
 
 All colors, icons and sizes shown are generated directly from the Fyne library, so the list is always complete and matches the version of Fyne currently used by this app.
 
-<img width="914" height="800" alt="Screenshot from 2026-09-14 21-14-55" src="https://github.com/user-attachments/assets/02c36c6c-e739-4065-91ce-5560572dd7bc" />
+<img width="1140" height="895" alt="Image" src="https://github.com/user-attachments/assets/fc574fbd-48d5-476e-aed2-6af653e1971a" />
 
 ## Installation
 
