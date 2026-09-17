@@ -14,9 +14,11 @@ func TestMakeFunctions(t *testing.T) {
 	testApp := test.NewApp()
 	defer testApp.Quit()
 
+	noopCopy := func(string) {}
+
 	cases := []struct {
 		name string
-		make func() fyne.CanvasObject
+		make func(func(string)) fyne.CanvasObject
 	}{
 		{"Colors", makeColors},
 		{"Icons", makeIcons},
@@ -25,7 +27,7 @@ func TestMakeFunctions(t *testing.T) {
 
 	for _, c := range cases {
 		t.Run(c.name, func(t *testing.T) {
-			obj := c.make()
+			obj := c.make(noopCopy)
 			assert.NotNil(t, obj)
 		})
 	}

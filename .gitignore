@@ -32,3 +32,6 @@ go.work.sum
 .vscode/
 .claude/
 .mcp.json
+fyne_metadata_init.go
+fyne-theme-explorer.tar.xz
+Fyne Theme Explorer.tar.xz
