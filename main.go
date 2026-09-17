@@ -5,8 +5,6 @@ import (
 	"cmp"
 	"fmt"
 	"image/color"
-	"net/url"
-	"runtime/debug"
 	"slices"
 	"strings"
 
@@ -14,7 +12,6 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
@@ -32,6 +29,7 @@ func main() {
 	app := app.NewWithID("io.github.erikkalkoken.fyne-theme-explorer")
 	w := app.NewWindow("Fyne Theme Explorer")
 	tabs := container.NewAppTabs(
+		container.NewTabItem("Welcome", makeWelcome()),
 		container.NewTabItem("Colors", withTitle("Colors", makeColors())),
 		container.NewTabItem("Icons", withTitle("Icons", makeIcons())),
 		container.NewTabItem("Sizes", withTitle("Sizes", makeSizes())),
@@ -50,13 +48,9 @@ func main() {
 
 	})
 	themeSelect.SetSelected("Auto")
-	aboutButton := kxwidget.NewIconButton(theme.InfoIcon(), func() {
-		showAboutDialog(w)
-	})
 	bottom := container.NewVBox(
 		widget.NewSeparator(),
 		container.NewHBox(
-			aboutButton,
 			layout.NewSpacer(),
 			widget.NewLabel("Theme"),
 			themeSelect,
@@ -70,37 +64,8 @@ func main() {
 		nil,
 		tabs,
 	))
-	w.Resize(fyne.NewSize(600, 500))
+	w.Resize(fyne.NewSize(800, 600))
 	w.ShowAndRun()
-}
-
-func showAboutDialog(w fyne.Window) {
-	title := widget.NewLabel("Fyne Theme Explorer")
-	title.TextStyle.Bold = true
-	title.SizeName = theme.SizeNameSubHeadingText
-
-	description := widget.NewLabel("A desktop app for browsing the current Fyne theme's colors, icons, and sizes.")
-	description.Wrapping = fyne.TextWrapWord
-
-	link, _ := url.Parse(repoURL)
-	content := container.NewVBox(
-		container.NewHBox(title, widget.NewLabel(appVersion())),
-		description,
-		widget.NewHyperlink(repoURL, link),
-		widget.NewLabel("(c) 2026 Erik Kalkoken"),
-	)
-	dialog.NewCustom("About", "Close", content, w).Show()
-}
-
-// appVersion returns the module version embedded by `go install pkg@version`.
-// It is "(devel)" for local go build/go run and a pseudo-version when
-// installed via @latest without any git tags.
-func appVersion() string {
-	bi, ok := debug.ReadBuildInfo()
-	if !ok {
-		return "unknown"
-	}
-	return bi.Main.Version
 }
 
 func withTitle(name string, content fyne.CanvasObject) fyne.CanvasObject {
